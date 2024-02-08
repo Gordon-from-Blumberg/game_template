@@ -17,6 +17,7 @@ import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.utils.JsonConfigLoader;
 import com.gordonfromblumberg.games.core.common.utils.RandomGen;
 import com.gordonfromblumberg.games.core.common.utils.StringUtils;
+import com.gordonfromblumberg.games.core.mooncalendar.MoonScreen;
 
 import java.io.File;
 import java.util.function.Consumer;
@@ -84,7 +85,8 @@ public class Main extends Game {
 		assetManager.finishLoading();
 		this.batch = new SpriteBatch();
 		this.mainMenuScreen = new MainMenuScreen(batch);
-		setScreen(mainMenuScreen);
+//		setScreen(mainMenuScreen);
+		setScreen(new MoonScreen(batch));
 		int width = configManager.getInteger("screenWidth");
 		int height = configManager.getInteger("screenHeight");
 		Gdx.graphics.setWindowedMode(width, height);

@@ -4,18 +4,23 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.gordonfromblumberg.games.core.common.Main;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
+import com.gordonfromblumberg.games.core.common.ui.SuperLabel;
+import com.gordonfromblumberg.games.core.common.utils.RandomGen;
 import com.gordonfromblumberg.games.core.game_template.TemplateScreen;
 
 public class MainMenuScreen extends AbstractScreen {
     private static final Logger log = LogManager.create(MainMenuScreen.class);
 
     TextButton textButton;
+    SuperLabel sl;
 
     public MainMenuScreen(SpriteBatch batch) {
         super(batch);
@@ -28,6 +33,7 @@ public class MainMenuScreen extends AbstractScreen {
 
     @Override
     protected void update(float delta) {
+        sl.rotateBy(60 * delta);
     }
 
     @Override
@@ -44,5 +50,22 @@ public class MainMenuScreen extends AbstractScreen {
             }
         });
         uiRenderer.rootTable.add(textButton);
+
+        sl = new SuperLabel(uiSkin);
+        uiRenderer.addActor(sl);
+        sl.addAction(new MyMoveAction());
+    }
+
+    static class MyMoveAction extends MoveToAction {
+        MyMoveAction() {
+            setPosition(RandomGen.INSTANCE.nextFloat(100, 500),
+                    RandomGen.INSTANCE.nextFloat(50, 400));
+            setDuration(1f);
+        }
+
+        @Override
+        protected void end() {
+            target.addAction(new MyMoveAction());
+        }
     }
 }

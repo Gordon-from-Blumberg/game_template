@@ -3,6 +3,7 @@ package com.gordonfromblumberg.games.core.common.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -59,8 +60,16 @@ public class UIRenderer extends AbstractRenderer {
         stage.addListener(listener);
     }
 
+    public void addActor(Actor actor) {
+        stage.addActor(actor);
+    }
+
     public void setAsInputProcessor() {
         Gdx.input.setInputProcessor(stage);
+    }
+
+    public Table getRootTable() {
+        return rootTable;
     }
 
     @Override
