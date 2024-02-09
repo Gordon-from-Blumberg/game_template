@@ -11,11 +11,17 @@ public enum MoonType {
     WANING2("moon-1", true),
     ;
 
+    private static final MoonType[] ALL = values();
+
     public final String image;
     public final boolean flipped;
 
     MoonType(String image, boolean flipped) {
         this.image = image;
         this.flipped = flipped;
+    }
+
+    public MoonType next() {
+        return ALL[(ordinal() + 1) % ALL.length];
     }
 }
