@@ -7,6 +7,7 @@ import com.gordonfromblumberg.games.core.common.Main;
 import com.gordonfromblumberg.games.core.common.debug.DebugOptions;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
+import com.gordonfromblumberg.games.core.shader_editor.ShaderEditorScreen;
 import com.gordonfromblumberg.games.desktop.common.factory.DesktopFactory;
 
 import java.io.File;
@@ -22,6 +23,7 @@ public class DesktopLauncher {
 
 		DesktopFactory.init();
 		ConfigManager cfgMgr = AbstractFactory.getInstance().configManager();
+		Main main = Main.createInstance();
 
 		for (String arg : args) {
 			if ("-debug".equals(arg)) {
@@ -55,8 +57,11 @@ public class DesktopLauncher {
 				config.preferencesFileType = Files.FileType.Absolute;
 				continue;
 			}
+			if ("-shaderEditor".equals(arg)) {
+				main.setStartScreenSupplier(ShaderEditorScreen::new);
+			}
 		}
 
-		new LwjglApplication(Main.createInstance(), config);
+		new LwjglApplication(main, config);
 	}
 }

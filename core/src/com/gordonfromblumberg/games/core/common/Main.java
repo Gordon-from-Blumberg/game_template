@@ -17,6 +17,7 @@ import com.gordonfromblumberg.games.core.common.utils.*;
 
 import java.io.File;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Main extends Game {
 	public static final String NAME = "game_template";
@@ -30,6 +31,7 @@ public class Main extends Game {
 
 	private SpriteBatch batch;
 	private MainMenuScreen mainMenuScreen;
+	private Function<SpriteBatch, AbstractScreen> startScreenSupplier;
 
 	public static Main createInstance() {
 		instance = new Main();
@@ -80,7 +82,7 @@ public class Main extends Game {
 		Assets.manager().finishLoading();
 		this.batch = new SpriteBatch();
 		this.mainMenuScreen = new MainMenuScreen(batch);
-		setScreen(mainMenuScreen);
+		setScreen(startScreenSupplier != null ? startScreenSupplier.apply(batch) : mainMenuScreen);
 		int width = configManager.getInteger("screenWidth");
 		int height = configManager.getInteger("screenHeight");
 		Gdx.graphics.setWindowedMode(width, height);
@@ -108,6 +110,10 @@ public class Main extends Game {
 	private void loadUiAssets() {
 		Assets.manager().load("ui/uiskin.atlas", TextureAtlas.class);
 		Assets.manager().load("ui/uiskin.json", Skin.class);
+	}
+
+	public void setStartScreenSupplier(Function<SpriteBatch, AbstractScreen> startScreenSupplier) {
+		this.startScreenSupplier = startScreenSupplier;
 	}
 
 	@Override
