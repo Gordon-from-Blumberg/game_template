@@ -99,9 +99,8 @@ public class SaveLoadWindow extends DialogExt {
         getContentTable().addListener(new ClickListener(Input.Buttons.LEFT) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (event.getTarget() instanceof Label && event.getTarget().getUserObject() instanceof FileRow) {
+                if (event.getTarget() instanceof Label && event.getTarget().getUserObject() instanceof FileRow fileRow) {
                     int clickCount = getTapCount();
-                    FileRow fileRow = (FileRow) event.getTarget().getUserObject();
                     if (clickCount == 1) {
                         fileList.select(fileRow);
                     } else if (clickCount == 2 && fileRow == fileList.selected) {

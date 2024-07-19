@@ -1,8 +1,11 @@
 package com.gordonfromblumberg.games.core.shader_editor;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
@@ -22,7 +25,7 @@ public class ShaderEditorUIRenderer extends WorldUIRenderer<ShaderEditorWorld> {
     private TextArea vertexShaderText;
     private TextArea fragmentShaderText;
 
-    private final TextField.TextFieldListener changeListener = (field, c) -> {
+    private final TextField.TextFieldListener onTypeListener = (field, c) -> {
         if (c == '\n' || c == '\r') {
             String text = field.getText();
             int cursorPosition = field.getCursorPosition();
@@ -60,7 +63,7 @@ public class ShaderEditorUIRenderer extends WorldUIRenderer<ShaderEditorWorld> {
 
         table.row();
         vertexShaderText = new TextArea(defaultShader.getVertexShaderSource(), skin);
-        vertexShaderText.setTextFieldListener(changeListener);
+        vertexShaderText.setTextFieldListener(onTypeListener);
         table.add(vertexShaderText).fill().expand();
 
         table.row();
@@ -68,7 +71,7 @@ public class ShaderEditorUIRenderer extends WorldUIRenderer<ShaderEditorWorld> {
 
         table.row();
         fragmentShaderText = new TextArea(defaultShader.getFragmentShaderSource(), skin);
-        fragmentShaderText.setTextFieldListener(changeListener);
+        fragmentShaderText.setTextFieldListener(onTypeListener);
         table.add(fragmentShaderText).fill().expand();
 
         table.row();
@@ -78,6 +81,17 @@ public class ShaderEditorUIRenderer extends WorldUIRenderer<ShaderEditorWorld> {
 
         rootTable.add().expand();
         rootTable.add(table).width(config.getFloat("shaderEditor.uiWidth")).fill();
+
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.F8) {
+                    world.requestRecompile();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override

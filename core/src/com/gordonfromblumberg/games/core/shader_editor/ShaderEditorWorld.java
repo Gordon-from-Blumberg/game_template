@@ -48,6 +48,11 @@ public class ShaderEditorWorld extends World {
         return wasChanged && time > AbstractFactory.getInstance().configManager().getFloat("shaderEditor.delaySec");
     }
 
+    public void requestRecompile() {
+        wasChanged = true;
+        time = AbstractFactory.getInstance().configManager().getFloat("shaderEditor.delaySec") + 1;
+    }
+
     public void reset() {
         this.wasChanged = false;
         time = 0;
