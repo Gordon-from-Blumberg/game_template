@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
+import com.gordonfromblumberg.games.core.common.log.LogManager;
+import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.ui.UIUtils;
 import com.gordonfromblumberg.games.core.common.ui.UpdatableLabel;
 import com.gordonfromblumberg.games.core.common.utils.Assets;
@@ -15,10 +17,28 @@ import com.gordonfromblumberg.games.core.common.world.WorldUIRenderer;
 import java.util.function.Supplier;
 
 public class ShaderEditorUIRenderer extends WorldUIRenderer<ShaderEditorWorld> {
+    private static final Logger log = LogManager.create(ShaderEditorUIRenderer.class);
+
     private TextArea vertexShaderText;
     private TextArea fragmentShaderText;
 
     private final TextField.TextFieldListener changeListener = (field, c) -> {
+        if (c == '\n' || c == '\r') {
+            String text = field.getText();
+            int cursorPosition = field.getCursorPosition();
+            int lastNewLine = text.lastIndexOf('\n', cursorPosition - 2);
+            if (lastNewLine > -1) {
+                int i = lastNewLine;
+                int n = 0;
+                while (text.charAt(++i) == ' ')
+                    ++n;
+                String indent = " ".repeat(n);
+                text = text.substring(0, cursorPosition) + indent + text.substring(cursorPosition);
+                field.setText(text);
+                field.setCursorPosition(cursorPosition + n);
+            }
+        }
+
         if (field == vertexShaderText) {
             world.setVertexShaderSource(field.getText());
         } else {
