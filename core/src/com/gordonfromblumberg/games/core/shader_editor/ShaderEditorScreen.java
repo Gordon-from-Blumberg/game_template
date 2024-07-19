@@ -7,7 +7,9 @@ import com.gordonfromblumberg.games.core.common.world.WorldScreen;
 public class ShaderEditorScreen extends WorldScreen<ShaderEditorWorld> {
 
     public ShaderEditorScreen(SpriteBatch batch) {
-        super(batch, new ShaderEditorWorld());
+        super(batch, new ShaderEditorWorld(
+                batch.getShader().getVertexShaderSource(),
+                batch.getShader().getFragmentShaderSource()));
     }
 
     @Override

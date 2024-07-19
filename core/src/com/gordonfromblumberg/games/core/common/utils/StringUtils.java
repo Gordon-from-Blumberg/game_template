@@ -96,4 +96,8 @@ public class StringUtils {
         }
         return true;
     }
+
+    public static String defaultIfBlank(String string, String defaultString) {
+        return isBlank(string) ? defaultString : string;
+    }
 }

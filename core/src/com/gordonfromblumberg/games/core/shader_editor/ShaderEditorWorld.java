@@ -11,9 +11,15 @@ public class ShaderEditorWorld extends World {
 
     private float time;
 
+    public ShaderEditorWorld(String vertexShaderSource, String fragmentShaderSource) {
+        this.vertexShaderSource = vertexShaderSource;
+        this.fragmentShaderSource = fragmentShaderSource;
+    }
+
     public void setVertexShaderSource(String vertexShaderSource) {
         this.vertexShaderSource = vertexShaderSource;
         this.wasChanged = true;
+        this.time = 0;
     }
 
     public String getVertexShaderSource() {
@@ -23,6 +29,7 @@ public class ShaderEditorWorld extends World {
     public void setFragmentShaderSource(String fragmentShaderSource) {
         this.fragmentShaderSource = fragmentShaderSource;
         this.wasChanged = true;
+        this.time = 0;
     }
 
     public String getFragmentShaderSource() {
@@ -41,7 +48,7 @@ public class ShaderEditorWorld extends World {
         return wasChanged && time > AbstractFactory.getInstance().configManager().getFloat("shaderEditor.delaySec");
     }
 
-    public void recompiled() {
+    public void reset() {
         this.wasChanged = false;
         time = 0;
     }
