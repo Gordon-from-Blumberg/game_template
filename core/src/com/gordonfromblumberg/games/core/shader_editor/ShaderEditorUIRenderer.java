@@ -55,14 +55,13 @@ public class ShaderEditorUIRenderer extends WorldUIRenderer<ShaderEditorWorld> {
         ConfigManager config = AbstractFactory.getInstance().configManager();
         Skin skin = Assets.get("ui/uiskin.json", Skin.class);
 
-        ShaderProgram defaultShader = batch.getShader();
         Table table = UIUtils.createTable(skin);
         table.setBackground(skin.getDrawable("default-round-large"));
 
         table.add("Vertex shader");
 
         table.row();
-        vertexShaderText = new TextArea(defaultShader.getVertexShaderSource(), skin);
+        vertexShaderText = new TextArea(world.getVertexShaderSource(), skin);
         vertexShaderText.setTextFieldListener(onTypeListener);
         table.add(vertexShaderText).fill().expand();
 
@@ -70,7 +69,7 @@ public class ShaderEditorUIRenderer extends WorldUIRenderer<ShaderEditorWorld> {
         table.add("Fragment shader");
 
         table.row();
-        fragmentShaderText = new TextArea(defaultShader.getFragmentShaderSource(), skin);
+        fragmentShaderText = new TextArea(world.getFragmentShaderSource(), skin);
         fragmentShaderText.setTextFieldListener(onTypeListener);
         table.add(fragmentShaderText).fill().expand();
 

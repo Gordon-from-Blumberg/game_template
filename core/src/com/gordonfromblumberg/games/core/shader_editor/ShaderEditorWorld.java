@@ -14,6 +14,8 @@ public class ShaderEditorWorld extends World {
     public ShaderEditorWorld(String vertexShaderSource, String fragmentShaderSource) {
         this.vertexShaderSource = vertexShaderSource;
         this.fragmentShaderSource = fragmentShaderSource;
+
+        requestRecompile();
     }
 
     public void setVertexShaderSource(String vertexShaderSource) {

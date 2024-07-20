@@ -1,5 +1,6 @@
 package com.gordonfromblumberg.games.core.shader_editor;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -20,9 +21,12 @@ public class ShaderEditorRenderer extends WorldRenderer<ShaderEditorWorld> {
     private final ShaderProgram defaultShader;
     private final Texture defaultTexture;
 
+    private float time;
+
     public ShaderEditorRenderer(SpriteBatch batch, ShaderEditorWorld world) {
         super(world);
 
+        this.centerCamera = true;
         this.batch = batch;
         this.defaultShader = batch.getShader();
         this.viewSize = AbstractFactory.getInstance().configManager().getFloat("shaderEditor.viewSize");
@@ -36,6 +40,8 @@ public class ShaderEditorRenderer extends WorldRenderer<ShaderEditorWorld> {
     @Override
     public void render(float dt) {
         super.render(dt);
+
+        time += dt;
 
         if (world.needRecompile()) {
             ShaderProgram newShader = new ShaderProgram(world.getVertexShaderSource(), world.getFragmentShaderSource());
@@ -52,7 +58,16 @@ public class ShaderEditorRenderer extends WorldRenderer<ShaderEditorWorld> {
 
         batch.setShader(shader);
         batch.setProjectionMatrix(camera.combined);
+
         batch.begin();
+        if (shader != null) {
+            shader.setUniformf("u_time", time);
+            shader.setUniformf("u_resolution", viewSize, viewSize);
+            shader.setUniformf("u_mouse",
+                    Gdx.input.getX() / viewSize,
+                    (Gdx.graphics.getHeight() - Gdx.input.getY()) / viewSize);
+        }
+
         if (texture != null) {
             batch.draw(texture, 0, 0, viewSize, viewSize);
         } else {
