@@ -58,7 +58,14 @@ public class ShaderEditorUIRenderer extends WorldUIRenderer<ShaderEditorWorld> {
         Table table = UIUtils.createTable(skin);
         table.setBackground(skin.getDrawable("default-round-large"));
 
-        table.add("Vertex shader");
+        table.row();
+        table.add("F5 to save image and code of shaders").left();
+
+        table.row();
+        table.add("F8 to recompile immediately").left();
+
+        table.row();
+        table.add("Vertex shader").padTop(10);
 
         table.row();
         vertexShaderText = new TextArea(world.getVertexShaderSource(), skin);

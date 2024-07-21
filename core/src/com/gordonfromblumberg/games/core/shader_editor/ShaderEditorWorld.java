@@ -4,6 +4,8 @@ import com.gordonfromblumberg.games.core.common.factory.AbstractFactory;
 import com.gordonfromblumberg.games.core.common.world.World;
 
 public class ShaderEditorWorld extends World {
+    public static final String DATA_DIR = "shader_editor";
+
     private String vertexShaderSource;
     private String fragmentShaderSource;
     private boolean wasChanged;
