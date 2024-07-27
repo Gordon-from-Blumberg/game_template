@@ -32,24 +32,20 @@ float noise1(vec2 st) {
 }
 
 void main() {
-  vec2 st = gl_FragCoord.xy / u_resolution + u_time * vec2(0.1, -0.02);
+  vec2 st = gl_FragCoord.xy / u_resolution;// + u_time * vec2(0.1, 0.07);
 //  vec3 clr1 = vec3(.8, .7, .2);
-  vec3 clr1 = vec3(.2, .6, .85);
-  vec3 clr2 = vec3(.9, 1., 1.);
-//  vec3 clr2 = vec3(1.0, 1.0,1.0 );
+  vec3 clr1 = vec3(.0, .0, .0);
+//  vec3 clr2 = vec3(.02, .70, .35);
+  vec3 clr2 = vec3(1.0, 1.0,1.0 );
   float k = 24. + 8 * sin(u_time / 3.);
+  //gl_FragColor = vec4(mix(clr1, clr2, noise1(st*16)), 1.);
   float a = 1.0;
-  float z = 5.0;
-  float n = a * noise1(st * z+a*vec2(sin(u_time*0.3), cos(u_time*0.5))); a *= 0.5; z *= 2.;
-  n += a * noise1(st * z+a*vec2(sin(u_time*1.0), cos(u_time*0.7))); a *= 0.5; z *= 2.;
-  n += a * noise1(st * z +a*vec2(sin(u_time*1.5), cos(u_time*2.7))); a *= 0.5; z *= 2.; 
-  n += a * noise1(st * z + u_time * 0); a *= 0.5; z *= 2.; 
-  n += a * noise1(st * z - u_time * 0); a *= 0.5; z *= 2.; 
-  n += a * noise1(st * z - u_time * 0); a *= 0.5; z *= 2.;
-  n += a * noise1(st * z - u_time * 0); a *= 0.5; z *= 2.;
-  n = 0.5 * n + 0.5;
-  n = smoothstep(0,1,n);
-  gl_FragColor = vec4(mix(clr1, clr2, n*n*n)*1.0, 1.);
-//  gl_FragColor = vec4(vec3(n * 0.5 + 0.5), 1.0);
+  float z = 8.0;
+  float n = a * noise1(st * z); a *= 0.5; z *= 2.;
+  n += a * noise1(st * z); a *= 0.5; z *= 2.;
+  n += a * noise1(st * z); a *= 0.5; z *= 2.; 
+  n += a * noise1(st * z); a *= 0.5; z *= 2.; 
+  n += a * noise1(st * z); a *= 0.5; z *= 2.; 
+  gl_FragColor = vec4(vec3(n * 0.5 + 0.5), 1.0);
   //gl_FragColor = vec4(vec3(noise1(st * 16)*0.5+0.5), 1.);
 }
