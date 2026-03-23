@@ -43,8 +43,8 @@ public class ShaderEditorScreen extends WorldScreen<ShaderEditorWorld> {
     }
 
     @Override
-    protected void createUiRenderer() {
-        this.uiRenderer = new ShaderEditorUIRenderer(batch, world, this::getViewCoords3);
+    protected ShaderEditorUIRenderer createUiRenderer() {
+        return new ShaderEditorUIRenderer(world, getInfo());
     }
 
     protected static ShaderEditorWorld initWorld() {

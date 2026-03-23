@@ -75,7 +75,7 @@ public class TemplateRenderer extends WorldRenderer<TemplateWorld> {
 
     @Override
     public void render(float dt) {
-        updateCamera();
+        updateCamera(8 * camera.zoom);
 
         batch.begin();
         final Color origColor = TEMP_COLOR.set(batch.getColor());
@@ -143,19 +143,5 @@ public class TemplateRenderer extends WorldRenderer<TemplateWorld> {
         ClickPoint cp = ClickPoint.getInstance();
         clickPoints.add(cp.init(tempVec3.x, tempVec3.y));
         Pools.free(tempVec3);
-    }
-
-    private void updateCamera() {
-        float cameraSpeed = 8 * camera.zoom;
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            camera.translate(-cameraSpeed, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            camera.translate(cameraSpeed, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.UP))
-            camera.translate(0, cameraSpeed);
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            camera.translate(0, -cameraSpeed);
-
-        viewport.apply(centerCamera);
     }
 }

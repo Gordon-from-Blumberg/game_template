@@ -17,7 +17,8 @@
 	},
 	"TextButtonStyle": {
 		"default": { "parent": "default", "font": "default-font", "fontColor": "white" },
-		"toggle": { "parent": "default", "checked": "default-round-down", "downFontColor": "red" }
+		"toggle": { "parent": "default", "checked": "default-round-down", "downFontColor": "red" },
+		"close": { "down": null, "up": null, "font": "default-font", "fontColor": "red", "unpressedOffsetY": 2, "pressedOffsetY": 1 }
 	},
 	"ScrollPaneStyle": {
 		"default": { "vScroll": "default-scroll", "hScrollKnob": "default-round-large", "background": "default-rect", "hScroll": "default-scroll", "vScrollKnob": "default-round-large" }

@@ -21,8 +21,6 @@ import java.util.function.Function;
 
 public class Main extends Game {
 	public static final String NAME = "game_template";
-	public static String WORK_DIR_PATH;
-	public static FileHandle WORK_DIR;
 
 	private static Main instance;
 	private static final Logger log = LogManager.create(Main.class);
@@ -50,25 +48,22 @@ public class Main extends Game {
 	@Override
 	public void create() {
 		configManager = AbstractFactory.getInstance().configManager();
-		configManager.init();
+		configManager.init(NAME);
 
-		if (WORK_DIR_PATH == null) {
+		if (Paths.workDirPath() == null) {
 			String workDir = configManager.getString("workDir");
 			if (StringUtils.isBlank(workDir)) {
 				workDir = Gdx.files.getExternalStoragePath() + NAME;
 			}
-			WORK_DIR_PATH = workDir;
+			Paths.setWorkDirPath(workDir);
 		}
-		WORK_DIR = Gdx.files.absolute(WORK_DIR_PATH);
-		if (!WORK_DIR.exists()) {
-			WORK_DIR.mkdirs();
-		}
+		Paths.initWorkDir();
 
-		FileHandle logFile = WORK_DIR.child(configManager.getString("log.dir") + File.separator
+		FileHandle logFile = Paths.workDir().child(configManager.getString("log.dir") + File.separator
 				+ configManager.getString("log.file"));
 		LogManager.addAppender(new FileLogAppender(logFile));
 		LogManager.init();
-		log.info("INIT: Work dir = " + WORK_DIR_PATH);
+		log.info("INIT: Work dir = " + Paths.workDirPath());
 
 		long seed = configManager.contains("seed")
 				? configManager.getLong("seed")

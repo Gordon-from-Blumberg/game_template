@@ -15,6 +15,7 @@ import com.gordonfromblumberg.games.core.common.ui.UpdatableLabel;
 import com.gordonfromblumberg.games.core.common.utils.Assets;
 import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.utils.StringUtils;
+import com.gordonfromblumberg.games.core.common.world.WorldUIInfo;
 import com.gordonfromblumberg.games.core.common.world.WorldUIRenderer;
 
 import java.util.function.Supplier;
@@ -49,8 +50,8 @@ public class ShaderEditorUIRenderer extends WorldUIRenderer<ShaderEditorWorld> {
         }
     };
 
-    public ShaderEditorUIRenderer(SpriteBatch batch, ShaderEditorWorld world, Supplier<Vector3> viewCoords) {
-        super(batch, world, viewCoords);
+    public ShaderEditorUIRenderer(ShaderEditorWorld world, WorldUIInfo<ShaderEditorWorld> info) {
+        super(info);
 
         ConfigManager config = AbstractFactory.getInstance().configManager();
         Skin skin = Assets.get("ui/uiskin.json", Skin.class);
@@ -81,7 +82,10 @@ public class ShaderEditorUIRenderer extends WorldUIRenderer<ShaderEditorWorld> {
         table.add(fragmentShaderText).fill().expand();
 
         table.row();
-        Label errorLabel = new UpdatableLabel(skin, () -> StringUtils.defaultIfBlank(world.getError(), "No error"));
+        Label errorLabel = new UpdatableLabel(skin, sb -> {
+            sb.clear();
+            sb.append(StringUtils.defaultIfBlank(world.getError(), "No error"));
+        });
         errorLabel.setWrap(true);
         table.add(errorLabel).fill();
 
