@@ -1,22 +1,29 @@
 package com.gordonfromblumberg.games.core.common.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.gordonfromblumberg.games.core.common.Main;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
+import com.gordonfromblumberg.games.core.common.ui.UIUtils;
 import com.gordonfromblumberg.games.core.common.utils.Assets;
+import com.gordonfromblumberg.games.core.common.world.WorldScreen;
 import com.gordonfromblumberg.games.core.game_template.TemplateScreen;
+import com.gordonfromblumberg.games.core.shader_editor.ShaderEditorScreen;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public class MainMenuScreen extends AbstractScreen {
     private static final Logger log = LogManager.create(MainMenuScreen.class);
-
-    TextButton textButton;
 
     public MainMenuScreen(SpriteBatch batch) {
         super(batch);
@@ -35,20 +42,26 @@ public class MainMenuScreen extends AbstractScreen {
     protected UIRenderer createUiRenderer() {
         UIRenderer uiRenderer = super.createUiRenderer();
 
+        Map<String, Function<SpriteBatch, WorldScreen<?>>> projects = new LinkedHashMap<>();
+        projects.put("Template", TemplateScreen::new);
+        projects.put("Shader editor", ShaderEditorScreen::new);
+
         final Skin uiSkin = Assets.get("ui/uiskin.json", Skin.class);
 
-        textButton = new TextButton("PLAY", uiSkin);
-        textButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-//                ConfigManager config = AbstractFactory.getInstance().configManager();
-//                worldParams.save(config.getConfigPreferences());
-//                config.flushPreferences();
-                Main.getInstance().setScreen(new TemplateScreen(batch));
-            }
-        });
-
-        uiRenderer.rootTable.add(textButton);
+        Table buttonList = UIUtils.createTable(uiSkin);
+        buttonList.defaults().fillX().space(5f);
+        for (Map.Entry<String, Function<SpriteBatch, WorldScreen<?>>> e : projects.entrySet()) {
+            TextButton button = new TextButton(e.getKey(), uiSkin);
+            button.addListener(new ClickListener(Input.Buttons.LEFT) {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Main.getInstance().setScreen(e.getValue().apply(batch));
+                }
+            });
+            buttonList.row();
+            buttonList.add(button);
+        }
+        uiRenderer.rootTable.add(buttonList);
         return uiRenderer;
     }
 }

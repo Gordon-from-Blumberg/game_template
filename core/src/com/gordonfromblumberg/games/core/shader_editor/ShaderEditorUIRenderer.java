@@ -1,9 +1,6 @@
 package com.gordonfromblumberg.games.core.shader_editor;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -17,8 +14,6 @@ import com.gordonfromblumberg.games.core.common.utils.ConfigManager;
 import com.gordonfromblumberg.games.core.common.utils.StringUtils;
 import com.gordonfromblumberg.games.core.common.world.WorldUIInfo;
 import com.gordonfromblumberg.games.core.common.world.WorldUIRenderer;
-
-import java.util.function.Supplier;
 
 public class ShaderEditorUIRenderer extends WorldUIRenderer<ShaderEditorWorld> {
     private static final Logger log = LogManager.create(ShaderEditorUIRenderer.class);
