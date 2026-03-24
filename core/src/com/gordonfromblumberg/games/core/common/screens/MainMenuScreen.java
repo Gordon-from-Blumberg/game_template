@@ -14,10 +14,10 @@ import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.ui.UIUtils;
 import com.gordonfromblumberg.games.core.common.utils.Assets;
-import com.gordonfromblumberg.games.core.common.world.WorldScreen;
 import com.gordonfromblumberg.games.core.game_template.TemplateScreen;
 import com.gordonfromblumberg.games.core.motion_animation.gravity.GravityScreen;
 import com.gordonfromblumberg.games.core.shader_editor.ShaderEditorScreen;
+import com.gordonfromblumberg.games.core.snakes.SnakesScreen;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -43,16 +43,17 @@ public class MainMenuScreen extends AbstractScreen {
     protected UIRenderer createUiRenderer() {
         UIRenderer uiRenderer = super.createUiRenderer();
 
-        Map<String, Function<SpriteBatch, WorldScreen<?>>> projects = new LinkedHashMap<>();
+        Map<String, Function<SpriteBatch, AbstractScreen>> projects = new LinkedHashMap<>();
         projects.put("Template", TemplateScreen::new);
         projects.put("Shader editor", ShaderEditorScreen::new);
         projects.put("Gravity", GravityScreen::new);
+        projects.put("Snakes", SnakesScreen::new);
 
         final Skin uiSkin = Assets.get("ui/uiskin.json", Skin.class);
 
         Table buttonList = UIUtils.createTable(uiSkin);
         buttonList.defaults().fillX().space(5f);
-        for (Map.Entry<String, Function<SpriteBatch, WorldScreen<?>>> e : projects.entrySet()) {
+        for (Map.Entry<String, Function<SpriteBatch, AbstractScreen>> e : projects.entrySet()) {
             TextButton button = new TextButton(e.getKey(), uiSkin);
             button.addListener(new ClickListener(Input.Buttons.LEFT) {
                 @Override

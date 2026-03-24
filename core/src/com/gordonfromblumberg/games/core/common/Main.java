@@ -72,7 +72,6 @@ public class Main extends Game {
 		log.info("Set seed = " + seed);
 		RandomGen.setSeed(seed);
 
-//	    Assets.manager().load("image/texture_pack.atlas", TextureAtlas.class);
 		loadUiAssets();
 		Assets.manager().finishLoading();
 
