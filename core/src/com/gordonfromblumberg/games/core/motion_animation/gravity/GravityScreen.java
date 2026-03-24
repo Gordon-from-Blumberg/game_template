@@ -9,7 +9,7 @@ import com.gordonfromblumberg.games.core.common.world.WorldUIRenderer;
 
 public class GravityScreen extends WorldScreen<GravityWorld> {
     public GravityScreen(SpriteBatch batch) {
-        super(batch, new GravityWorld());
+        super(batch, new GravityWorld(), "gravity");
 
         color = new Color(0.18f, 0.18f, 0.22f, 1f);
     }

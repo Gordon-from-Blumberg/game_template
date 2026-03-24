@@ -9,8 +9,6 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.gordonfromblumberg.games.core.common.event.Event;
-import com.gordonfromblumberg.games.core.common.event.EventHandler;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.model.GameObject;
@@ -64,7 +62,7 @@ public class TemplateWorld extends World {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                 int randTile = rand.nextInt(1, 3);
                 cell.setTile(new StaticTiledMapTile(assets
-                        .get("image/texture_pack.atlas", TextureAtlas.class)
+                        .get("image/template.atlas", TextureAtlas.class)
                         .findRegion("tile0" + randTile)));
                 layer.setCell(i, j, cell);
             }

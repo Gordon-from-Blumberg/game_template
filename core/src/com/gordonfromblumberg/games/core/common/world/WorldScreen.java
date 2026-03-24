@@ -17,8 +17,8 @@ public abstract class WorldScreen<T extends World> extends AbstractScreen {
     protected final Vector3 viewCoords3 = new Vector3();
     protected final Vector3 worldCoords3 = new Vector3();
 
-    protected WorldScreen(SpriteBatch batch, T world) {
-        super(batch);
+    protected WorldScreen(SpriteBatch batch, T world, String atlasName) {
+        super(batch, atlasName);
         log.info("World screen constructor for " + getClass().getSimpleName());
         this.world = world;
     }

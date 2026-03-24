@@ -1,6 +1,5 @@
 package com.gordonfromblumberg.games.core.shader_editor;
 
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
@@ -15,7 +14,7 @@ import static com.gordonfromblumberg.games.core.shader_editor.ShaderEditorWorld.
 public class ShaderEditorScreen extends WorldScreen<ShaderEditorWorld> {
 
     public ShaderEditorScreen(SpriteBatch batch) {
-        super(batch, initWorld());
+        super(batch, initWorld(), null);
     }
 
     @Override
@@ -38,8 +37,8 @@ public class ShaderEditorScreen extends WorldScreen<ShaderEditorWorld> {
     }
 
     @Override
-    protected void createWorldRenderer() {
-        worldRenderer = new ShaderEditorRenderer(batch, world);
+    protected ShaderEditorRenderer createWorldRenderer() {
+        return new ShaderEditorRenderer(batch, world);
     }
 
     @Override

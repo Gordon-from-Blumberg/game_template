@@ -17,7 +17,7 @@ public class TemplateScreen extends WorldScreen<TemplateWorld> {
     private static final Logger log = LogManager.create(TemplateScreen.class);
 
     public TemplateScreen(SpriteBatch batch) {
-        super(batch, new TemplateWorld());
+        super(batch, new TemplateWorld(), "template");
     }
 
     @Override

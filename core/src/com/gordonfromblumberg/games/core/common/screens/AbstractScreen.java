@@ -6,10 +6,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
+import com.gordonfromblumberg.games.core.common.utils.Assets;
 
 public abstract class AbstractScreen implements Screen {
     private static final Logger log = LogManager.create(AbstractScreen.class);
@@ -19,6 +21,7 @@ public abstract class AbstractScreen implements Screen {
     protected static int screenHeight;
 
     protected SpriteBatch batch;
+    protected TextureAtlas textureAtlas;
     protected Color color = Color.BLACK;
 
     protected UIRenderer uiRenderer;
@@ -26,7 +29,16 @@ public abstract class AbstractScreen implements Screen {
     protected boolean initialized;
 
     protected AbstractScreen(SpriteBatch batch) {
+        this(batch, null);
+    }
+
+    protected AbstractScreen(SpriteBatch batch, String atlasName) {
         this.batch = batch;
+        if (atlasName != null) {
+            String atlasFileName = "image/" + atlasName + ".atlas";
+            Assets.manager().load(atlasFileName, TextureAtlas.class);
+            textureAtlas = Assets.manager().finishLoadingAsset(atlasFileName);
+        }
     }
 
     protected void initialize() {

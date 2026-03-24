@@ -3,13 +3,11 @@ package com.gordonfromblumberg.games.core.common.model;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
-import com.gordonfromblumberg.games.core.common.utils.Assets;
 import com.gordonfromblumberg.games.core.common.utils.Poolable;
 
 @SuppressWarnings("rawtypes")
@@ -107,16 +105,8 @@ public class GameObject implements Disposable, Poolable {
         return height;
     }
 
-    protected static TextureAtlas getTextureAtlas() {
-        return Assets.manager().get("image/texture_pack.atlas", TextureAtlas.class);
-    }
-
     public void setRegion(TextureRegion region) {
         sprite.setRegion(region);
-    }
-
-    public void setRegion(String name) {
-        sprite.setRegion(getTextureAtlas().findRegion(name));
     }
 
     public void collide(GameObject other) {

@@ -72,10 +72,10 @@ public class Main extends Game {
 		log.info("Set seed = " + seed);
 		RandomGen.setSeed(seed);
 
-	    Assets.manager().load("image/texture_pack.atlas", TextureAtlas.class);
+//	    Assets.manager().load("image/texture_pack.atlas", TextureAtlas.class);
 		loadUiAssets();
-
 		Assets.manager().finishLoading();
+
 		this.batch = new SpriteBatch();
 		this.mainMenuScreen = new MainMenuScreen(batch);
 		setScreen(startScreenSupplier != null ? startScreenSupplier.apply(batch) : mainMenuScreen);

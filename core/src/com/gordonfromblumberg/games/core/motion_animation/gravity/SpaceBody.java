@@ -1,8 +1,10 @@
 package com.gordonfromblumberg.games.core.motion_animation.gravity;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Pool;
 import com.gordonfromblumberg.games.core.common.model.PhysicsGameObject;
+import com.gordonfromblumberg.games.core.common.utils.Assets;
 
 import java.nio.ByteBuffer;
 
@@ -20,7 +22,8 @@ public class SpaceBody extends PhysicsGameObject {
     float mass;
 
     public SpaceBody() {
-        setRegion("white-circle");
+        setRegion(Assets.manager().get("image/gravity.atlas", TextureAtlas.class)
+                          .findRegion("white-circle"));
     }
 
     public static SpaceBody instance() {

@@ -1,14 +1,9 @@
 package com.gordonfromblumberg.games.core.game_template;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
@@ -38,7 +33,6 @@ public class TemplateRenderer extends WorldRenderer<TemplateWorld> {
 
     final Array<ClickPoint> clickPoints = new Array<>();
 
-    TextureRegion background;
     private final Color pauseColor = Color.GRAY;
     final BitmapFontCache pauseText;
 
@@ -56,11 +50,6 @@ public class TemplateRenderer extends WorldRenderer<TemplateWorld> {
 
     public void initialize() {
         log.info("TemplateRenderer init");
-        final AssetManager assets = Assets.manager();
-
-        background = assets
-                .get("image/texture_pack.atlas", TextureAtlas.class)
-                .findRegion("background");
 
         this.mapRenderer = new IsometricTiledMapRenderer(world.getMap(), batch);
         TiledMapTileLayer l = (TiledMapTileLayer) world.getMap().getLayers().get("map");
