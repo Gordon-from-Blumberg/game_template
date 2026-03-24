@@ -27,7 +27,7 @@ public abstract class WorldScreen<T extends World> extends AbstractScreen {
     protected void initialize() {
         world.initialize();
         // create world renderer before ui
-        createWorldRenderer();
+        worldRenderer = createWorldRenderer();
         super.initialize();
         log.info("World screen init for " + getClass().getSimpleName());
     }
@@ -60,7 +60,7 @@ public abstract class WorldScreen<T extends World> extends AbstractScreen {
         uiRenderer.resize(width, height);
     }
 
-    protected abstract void createWorldRenderer();
+    protected abstract WorldRenderer<T> createWorldRenderer();
 
     @Override
     protected WorldUIRenderer<T> createUiRenderer() {

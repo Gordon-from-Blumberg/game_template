@@ -20,7 +20,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Main extends Game {
-	public static final String NAME = "game_template";
+	public static final String TITLE_NAME = "Motion animation";
+	public static final String NAME = "motion_animation";
 
 	private static Main instance;
 	private static final Logger log = LogManager.create(Main.class);
@@ -44,7 +45,7 @@ public class Main extends Game {
 		Assets.setAssetManager(new AssetManager());
 //		setJsonConfigLoader(class, function);
     }
-	
+
 	@Override
 	public void create() {
 		configManager = AbstractFactory.getInstance().configManager();

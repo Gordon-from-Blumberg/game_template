@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
-
 import com.gordonfromblumberg.games.core.common.utils.Assets;
 import com.gordonfromblumberg.games.core.common.utils.Poolable;
 
@@ -141,6 +140,10 @@ public class GameObject implements Disposable, Poolable {
 
     public void setColor(Color color) {
         sprite.setColor(color);
+    }
+
+    public void setColor (float r, float g, float b, float a) {
+        sprite.setColor(r, g, b, a);
     }
 
     public Sprite getSprite() {

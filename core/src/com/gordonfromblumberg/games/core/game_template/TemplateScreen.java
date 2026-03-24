@@ -9,7 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.gordonfromblumberg.games.core.common.log.LogManager;
 import com.gordonfromblumberg.games.core.common.log.Logger;
 import com.gordonfromblumberg.games.core.common.ui.ZoomByScrollListener;
-import com.gordonfromblumberg.games.core.common.world.*;
+import com.gordonfromblumberg.games.core.common.world.WorldRenderer;
+import com.gordonfromblumberg.games.core.common.world.WorldScreen;
+import com.gordonfromblumberg.games.core.common.world.WorldUIRenderer;
 
 public class TemplateScreen extends WorldScreen<TemplateWorld> {
     private static final Logger log = LogManager.create(TemplateScreen.class);
@@ -66,10 +68,10 @@ public class TemplateScreen extends WorldScreen<TemplateWorld> {
         uiRenderer.resize(width, height);
     }
 
-    protected void createWorldRenderer() {
+    protected WorldRenderer<TemplateWorld> createWorldRenderer() {
         log.info("GameScreen.createWorldRenderer");
 
-        worldRenderer = new TemplateRenderer(world, batch);
+        return new TemplateRenderer(world, batch);
     }
 
     @Override

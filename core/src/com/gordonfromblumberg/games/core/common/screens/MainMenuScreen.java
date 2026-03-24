@@ -16,6 +16,7 @@ import com.gordonfromblumberg.games.core.common.ui.UIUtils;
 import com.gordonfromblumberg.games.core.common.utils.Assets;
 import com.gordonfromblumberg.games.core.common.world.WorldScreen;
 import com.gordonfromblumberg.games.core.game_template.TemplateScreen;
+import com.gordonfromblumberg.games.core.motion_animation.gravity.GravityScreen;
 import com.gordonfromblumberg.games.core.shader_editor.ShaderEditorScreen;
 
 import java.util.LinkedHashMap;
@@ -45,6 +46,7 @@ public class MainMenuScreen extends AbstractScreen {
         Map<String, Function<SpriteBatch, WorldScreen<?>>> projects = new LinkedHashMap<>();
         projects.put("Template", TemplateScreen::new);
         projects.put("Shader editor", ShaderEditorScreen::new);
+        projects.put("Gravity", GravityScreen::new);
 
         final Skin uiSkin = Assets.get("ui/uiskin.json", Skin.class);
 

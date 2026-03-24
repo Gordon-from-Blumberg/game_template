@@ -18,7 +18,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 //		config.foregroundFPS = 0;
 //		config.vSyncEnabled = false;
-		config.title = Main.NAME;
+		config.title = Main.TITLE_NAME;
 
 		config.preferencesDirectory = config.preferencesDirectory + Main.NAME + '/';
 
