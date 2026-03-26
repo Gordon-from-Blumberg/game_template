@@ -12,7 +12,7 @@ public class SnakesUIRenderer extends WorldUIRenderer<SnakesWorld> {
         super(info);
 
         final Skin skin = Assets.get("ui/uiskin.json", Skin.class);
-        rootTable.add(worldTable(skin)).expand();
+        rootTable.add(worldTable(skin)).expand().fill();
         rootTable.add(sideBar(skin)).width(200f);
         rootTable.row();
         rootTable.add(footer(skin)).colspan(2).height(50f);
@@ -20,6 +20,14 @@ public class SnakesUIRenderer extends WorldUIRenderer<SnakesWorld> {
 
     private Table worldTable(Skin skin) {
         Table worldTable = new Table(skin);
+        worldTable.defaults().fill().expand().pad(5f);
+
+        for (int i = 0; i < 4; ++i) {
+            worldTable.row();
+            for (int j = 0; j < 4; ++j) {
+                worldTable.add(new SnakesComponent(world.states[i * 4 + j]));
+            }
+        }
         return worldTable;
     }
 

@@ -9,6 +9,7 @@ public class SnakesScreen extends WorldScreen<SnakesWorld> {
 
     public SnakesScreen(SpriteBatch batch) {
         super(batch, new SnakesWorld(), "snakes");
+        color.set(0.3f, 0.3f, 0.3f, 1f);
     }
 
     @Override

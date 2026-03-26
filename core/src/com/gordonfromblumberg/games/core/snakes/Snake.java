@@ -1,7 +1,7 @@
 package com.gordonfromblumberg.games.core.snakes;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import com.badlogic.gdx.utils.Queue;
+
 import java.util.Iterator;
 
 public class Snake {
@@ -11,7 +11,7 @@ public class Snake {
     boolean removeHead;
     Direction dir = Direction.UP;
     SnakePart head;
-    final Deque<SnakePart> parts = new ArrayDeque<>();
+    final Queue<SnakePart> parts = new Queue<>();
 
     Snake(int id, boolean mine) {
         this.id = id;
@@ -20,7 +20,7 @@ public class Snake {
 
     void read(String body) {
         String[] bodyParts = body.split(":");
-        if (bodyParts.length < parts.size()) {
+        if (bodyParts.length < parts.size) {
             parts.removeFirst().free();
         }
         int i = 0;
@@ -30,22 +30,22 @@ public class Snake {
         while (i < bodyParts.length) {
             SnakePart snakePart = SnakePart.instance();
             snakePart.set(bodyParts[i++]);
-            parts.add(snakePart);
+            parts.addLast(snakePart);
         }
-        head = parts.getFirst();
+        head = parts.first();
     }
 
     void set(Snake original) {
         if (original.head == null)
             return;
         dir = original.dir;
-        int sizeDiff = parts.size() - original.parts.size();
+        int sizeDiff = parts.size - original.parts.size;
         while (sizeDiff > 0) {
             parts.removeLast().free();
             --sizeDiff;
         }
         while (sizeDiff < 0) {
-            parts.add(SnakePart.instance());
+            parts.addLast(SnakePart.instance());
             ++sizeDiff;
         }
 
@@ -55,7 +55,7 @@ public class Snake {
             SnakePart origPart = origIt.next();
             thisIt.next().set(origPart.x, origPart.y);
         }
-        head = parts.getFirst();
+        head = parts.first();
         grow = false;
     }
 

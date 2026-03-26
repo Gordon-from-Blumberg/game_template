@@ -10,7 +10,8 @@ import java.io.IOException;
 public class SnakesWorld extends World {
     static final int generationSize = 16;
     static final char emptyChar = '.';
-    static final char powerSourceChar = '$';
+    static final char appleChar = '$';
+    static final char platformChar = '#';
 
     final State baseState;
     final State[] states = new State[generationSize];
@@ -24,6 +25,11 @@ public class SnakesWorld extends World {
         final int allSnakeCount = snakesLines.size;
         baseState = new State(width, height, allSnakeCount, true);
 
+        for (int i = 0, n = gridLines.size; i < n; ++i) {
+            String gridLine = gridLines.get(i);
+            gridLine.getChars(0, height, baseState.grid[i], 0);
+        }
+
         for (int i = 0, n = allSnakeCount >> 1; i < n; ++i) {
             baseState.snakeMap[i] = new Snake(i, true);
             baseState.snakeMap[i + n] = new Snake(i + n, false);
@@ -33,7 +39,7 @@ public class SnakesWorld extends World {
             String[] coords = appleLine.split(", ");
             int x = Integer.parseInt(coords[0]);
             int y = Integer.parseInt(coords[1]);
-            baseState.grid[x][y] = powerSourceChar;
+            baseState.grid[x][y] = appleChar;
             baseState.powerSources.add(State.packCoords(x, y));
         }
 
@@ -41,6 +47,7 @@ public class SnakesWorld extends World {
 
         for (int i = 0; i < generationSize; ++i) {
             states[i] = new State(width, height, snakesLines.size, false);
+            states[i].set(baseState); // todo remove later
         }
     }
 

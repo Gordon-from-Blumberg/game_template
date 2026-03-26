@@ -60,10 +60,10 @@ public class State {
             if (snake.head == null) continue;
 
             char target = snake.next(grid);
-            if (target == SnakesWorld.emptyChar || target == SnakesWorld.powerSourceChar) {
+            if (target == SnakesWorld.emptyChar || target == SnakesWorld.appleChar) {
                 int coords = packCoords(snake.head.x + snake.dir.x, snake.head.y + snake.dir.y);
                 moveTargets.add(coords);
-                if (target == SnakesWorld.powerSourceChar) {
+                if (target == SnakesWorld.appleChar) {
                     snake.grow = true;
                 }
             }
@@ -76,7 +76,7 @@ public class State {
             int nextX = snake.head.x + snake.dir.x;
             int nextY = snake.head.y + snake.dir.y;
             char target = snake.next(grid);
-            if (target == SnakesWorld.emptyChar || target == SnakesWorld.powerSourceChar) {
+            if (target == SnakesWorld.emptyChar || target == SnakesWorld.appleChar) {
                 SnakePart newHead = SnakePart.instance();
                 newHead.set(nextX, nextY);
                 snake.parts.addFirst(newHead);
@@ -84,7 +84,7 @@ public class State {
                 set(snake.head.x, snake.head.y, ch);
                 snake.head = newHead;
                 set(snake.head.x, snake.head.y, Character.toUpperCase(ch));
-                if (target == SnakesWorld.powerSourceChar) {
+                if (target == SnakesWorld.appleChar) {
                     powerSources.remove(packCoords(nextX, nextY));
                 }
             }
@@ -111,7 +111,7 @@ public class State {
             snake.removeHead = false;
             set(snake.head.x, snake.head.y, SnakesWorld.emptyChar);
             snake.parts.removeFirst().free();
-            snake.head = snake.parts.getFirst();
+            snake.head = snake.parts.first();
             toUpperCase(snake.head.x, snake.head.y);
         }
 
@@ -127,7 +127,7 @@ public class State {
             }
 
             // is snake length < 3 or snake out of screen
-            if (snake.parts.size() < 3 || maxX < 0 || minX >= width) {
+            if (snake.parts.size < 3 || maxX < 0 || minX >= width) {
                 for (SnakePart part : snake.parts) {
                     set(part.x, part.y, SnakesWorld.emptyChar);
                 }
