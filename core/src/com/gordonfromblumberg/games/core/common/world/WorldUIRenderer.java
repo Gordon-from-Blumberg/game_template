@@ -118,8 +118,7 @@ public class WorldUIRenderer<T extends World> extends UIRenderer {
         window.setHeight(200f);
         window.setY(viewport.getWorldHeight());
         window.add("Camera pos");
-        window.add(new UpdatableLabel(skin, sb -> {
-                sb.clear();
+        window.add(new UpdatableLabel(skin, true, sb -> {
                 floatToString(worldCameraParams.position.x, 2, sb);
                 sb.append(", ");
                 floatToString(worldCameraParams.position.y, 2, sb);
@@ -127,22 +126,17 @@ public class WorldUIRenderer<T extends World> extends UIRenderer {
 
         window.row();
         window.add("Zoom");
-        window.add(new UpdatableLabel(skin, sb -> {
-            sb.clear();
-            floatToString(worldCameraParams.zoom, 3, sb);
-        }));
+        window.add(new UpdatableLabel(skin, true, sb -> floatToString(worldCameraParams.zoom, 3, sb)));
 
         window.row();
         window.add("Screen");
-        window.add(new UpdatableLabel(skin, sb -> {
-            sb.clear();
-            sb.append(Gdx.input.getX()).append(", ").append(Gdx.input.getY());
-        }));
+        window.add(new UpdatableLabel(skin, true, sb -> sb.append(Gdx.input.getX())
+                                                          .append(", ")
+                                                          .append(Gdx.input.getY())));
 
         window.row();
         window.add("Viewport");
-        window.add(new UpdatableLabel(skin, sb -> {
-            sb.clear();
+        window.add(new UpdatableLabel(skin, true, sb -> {
             tempCoords.set(world.getMouseX(), world.getMouseY(), 0);
             info.worldToView(tempCoords);
             floatToString(tempCoords.x, 2, sb);
@@ -152,8 +146,7 @@ public class WorldUIRenderer<T extends World> extends UIRenderer {
 
         window.row();
         window.add("World");
-        window.add(new UpdatableLabel(skin, sb -> {
-            sb.clear();
+        window.add(new UpdatableLabel(skin, true, sb -> {
             floatToString(world.getMouseX(), 2, sb);
             sb.append(", ");
             floatToString(world.getMouseY(), 2, sb);
@@ -161,8 +154,7 @@ public class WorldUIRenderer<T extends World> extends UIRenderer {
 
         window.row();
         window.add("Stage");
-        window.add(new UpdatableLabel(skin, sb -> {
-            sb.clear();
+        window.add(new UpdatableLabel(skin, true, sb -> {
             stageCoords.set(Gdx.input.getX(), Gdx.input.getY());
             stage.screenToStageCoordinates(stageCoords);
             floatToString(stageCoords.x, 2, sb);

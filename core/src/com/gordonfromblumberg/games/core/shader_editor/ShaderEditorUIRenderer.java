@@ -77,10 +77,8 @@ public class ShaderEditorUIRenderer extends WorldUIRenderer<ShaderEditorWorld> {
         table.add(fragmentShaderText).fill().expand();
 
         table.row();
-        Label errorLabel = new UpdatableLabel(skin, sb -> {
-            sb.clear();
-            sb.append(StringUtils.defaultIfBlank(world.getError(), "No error"));
-        });
+        Label errorLabel = new UpdatableLabel(skin, true, sb ->
+                sb.append(StringUtils.defaultIfBlank(world.getError(), "No error")));
         errorLabel.setWrap(true);
         table.add(errorLabel).fill();
 

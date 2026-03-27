@@ -20,8 +20,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Main extends Game {
-	public static final String TITLE_NAME = "Motion animation";
-	public static final String NAME = "motion_animation";
+	public static final String TITLE_NAME = "Game projects";
+	public static final String NAME = "game_projects";
 
 	private static Main instance;
 	private static final Logger log = LogManager.create(Main.class);

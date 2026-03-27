@@ -3,6 +3,8 @@ package com.gordonfromblumberg.games.core.snakes;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -39,9 +41,12 @@ public class SnakesComponent extends Widget {
     }
 
     private final State state;
+    private final int number;
+    private final Label label = new Label("", Assets.get("ui/uiskin.json", Skin.class));
 
-    public SnakesComponent(State state) {
+    public SnakesComponent(State state, int number) {
         this.state = state;
+        this.number = number;
     }
 
     @Override
@@ -67,11 +72,14 @@ public class SnakesComponent extends Widget {
                 char cellChar = column[y];
                 switch (cellChar) {
                     case SnakesWorld.emptyChar ->
-                            emptyCell.draw(batch, offsetX + x * cellSize, offsetY - y * cellSize, cellSize, cellSize);
+                            emptyCell.draw(batch, offsetX + x * cellSize, offsetY - (y + 1) * cellSize,
+                                           cellSize, cellSize);
                     case SnakesWorld.appleChar ->
-                            appleCell.draw(batch, offsetX + x * cellSize, offsetY - y * cellSize, cellSize, cellSize);
+                            appleCell.draw(batch, offsetX + x * cellSize, offsetY - (y + 1) * cellSize,
+                                           cellSize, cellSize);
                     case SnakesWorld.platformChar ->
-                            platformCell.draw(batch, offsetX + x * cellSize, offsetY - y * cellSize, cellSize, cellSize);
+                            platformCell.draw(batch, offsetX + x * cellSize, offsetY - (y + 1) * cellSize,
+                                              cellSize, cellSize);
                 }
             }
         }
@@ -83,10 +91,12 @@ public class SnakesComponent extends Widget {
                 SnakePart part = snake.parts.get(i);
                 if (part == snake.head) {
                     (snake.mine ? mySnakeHead : oppSnakeHead)
-                            .draw(batch, offsetX + part.x * cellSize, offsetY - part.y * cellSize, cellSize, cellSize);
+                            .draw(batch, offsetX + part.x * cellSize, offsetY - (part.y + 1) * cellSize,
+                                  cellSize, cellSize);
                 } else {
                     (snake.mine ? mySnakeBody : oppSnakeBody)
-                            .draw(batch, offsetX + part.x * cellSize, offsetY - part.y * cellSize, cellSize, cellSize);
+                            .draw(batch, offsetX + part.x * cellSize, offsetY - (part.y + 1) * cellSize,
+                                  cellSize, cellSize);
                 }
 
                 if (i + 1 < n) {
@@ -94,9 +104,15 @@ public class SnakesComponent extends Widget {
                     float x = part.x + 0.5f * (next.x - part.x);
                     float y = part.y + 0.5f * (next.y - part.y);
                     (snake.mine ? mySnakeConnection : oppSnakeConnection)
-                            .draw(batch, offsetX + x * cellSize, offsetY - y * cellSize, cellSize, cellSize);
+                            .draw(batch, offsetX + x * cellSize, offsetY - (y + 1) * cellSize,
+                                  cellSize, cellSize);
                 }
             }
         }
+
+        label.setX(offsetX);
+        label.setY(getY() - cellSize);
+        label.setText("#" + number + ", turn = " + state.turn + ", fitness = ");
+        label.draw(batch, parentAlpha);
     }
 }
