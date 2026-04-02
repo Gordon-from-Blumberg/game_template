@@ -3,6 +3,8 @@ package com.gordonfromblumberg.games.core.snakes;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.gordonfromblumberg.games.core.snakes.SnakesWorld.moveSequenceSize;
+
 public class State {
     static final int bits16 = (1 << 16) - 1;
 
@@ -54,6 +56,17 @@ public class State {
         final char[][] grid = this.grid;
         final int width = grid.length;
         final int height = grid[0].length;
+
+        int mySnakeCount = 0, oppSnakeCount = 0;
+        for (Snake snake : snakeMap) {
+            if (snake.head != null) {
+                if (snake.mine) ++mySnakeCount;
+                else ++oppSnakeCount;
+            }
+        }
+
+        if (mySnakeCount == 0 || oppSnakeCount == 0 || turn >= moveSequenceSize || powerSources.isEmpty())
+            return;
 
         // fill moveTargets - set of cells where snakes are going to move (empty or with power source)
         for (Snake snake : snakeMap) {

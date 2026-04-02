@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.gordonfromblumberg.games.core.common.utils.Assets;
+import com.gordonfromblumberg.games.core.common.utils.IntToFloatFunction;
 
 public class SnakesComponent extends Widget {
     private static final Drawable emptyCell;
@@ -42,11 +43,13 @@ public class SnakesComponent extends Widget {
 
     private final State state;
     private final int number;
+    private final IntToFloatFunction fitnessSupplier;
     private final Label label = new Label("", Assets.get("ui/uiskin.json", Skin.class));
 
-    public SnakesComponent(State state, int number) {
+    public SnakesComponent(State state, int number, IntToFloatFunction fitnessSupplier) {
         this.state = state;
         this.number = number;
+        this.fitnessSupplier = fitnessSupplier;
     }
 
     @Override
@@ -112,7 +115,7 @@ public class SnakesComponent extends Widget {
 
         label.setX(offsetX);
         label.setY(getY() - cellSize);
-        label.setText("#" + number + ", turn = " + state.turn + ", fitness = ");
+        label.setText("#" + number + ", turn = " + state.turn + ", fitness = " + fitnessSupplier.apply(number));
         label.draw(batch, parentAlpha);
     }
 }

@@ -33,7 +33,7 @@ public class SnakesUIRenderer extends WorldUIRenderer<SnakesWorld> {
         for (int i = 0; i < 4; ++i) {
             worldTable.row();
             for (int j = 0; j < 4; ++j) {
-                worldTable.add(new SnakesComponent(world.states[i * 4 + j], i * 4 + j));
+                worldTable.add(new SnakesComponent(world.states[i * 4 + j], i * 4 + j, world::getFitness));
             }
         }
         return worldTable;

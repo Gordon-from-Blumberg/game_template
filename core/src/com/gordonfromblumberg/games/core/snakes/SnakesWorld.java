@@ -18,7 +18,7 @@ public class SnakesWorld extends World {
     final State baseState;
     final State[] states = new State[generationSize];
     int generation;
-    final Array<byte[][]> generations = new Array<>();
+    final Array<Solution[]> generations = new Array<>();
     int simulationTurn;
 
     float time;
@@ -55,14 +55,15 @@ public class SnakesWorld extends World {
         baseState.updateSnakes(snakesLines.toArray(String.class));
 
         for (int i = 0; i < generationSize; ++i) {
-            states[i] = new State(width, height, snakesLines.size, false);
+            State state = new State(width, height, snakesLines.size, false);
+            states[i] = state;
         }
     }
 
     @Override
     public void initialize() {
         // generate first generation
-        byte[][] firstGeneration = new byte[generationSize][moveSequenceSize];
+        Solution[] firstGeneration = new Solution[generationSize];
         final int snakeCount = baseState.snakeMap.length >> 1;
         for (int i = 0; i < generationSize; ++i) {
             // copy best move sequence from previous turn
@@ -71,9 +72,10 @@ public class SnakesWorld extends World {
 //                generation[0][moveSequenceSize - 1] = randomMove(snakeCount);
 //                continue;
 //            }
-
+            Solution solution = new Solution(moveSequenceSize);
+            firstGeneration[i] = solution;
             for (int j = 0; j < moveSequenceSize; ++j) {
-                firstGeneration[i][j] = randomMove(snakeCount);
+                solution.moveSequence[j] = randomMove(snakeCount);
             }
         }
 
@@ -123,13 +125,17 @@ public class SnakesWorld extends World {
         turnsPerSecond = speed;
     }
 
+    float getFitness(int n) {
+        return generations.get(generation - 1)[n].fitness;
+    }
+
     private void move() {
         final int allSnakeCount = baseState.snakeMap.length;
         final int width = baseState.grid.length;
 
         for (int i = 0; i < generationSize; ++i) {
             final State state = states[i];
-            final byte move = generations.get(generation - 1)[i][simulationTurn];
+            final byte move = generations.get(generation - 1)[i].moveSequence[simulationTurn];
 
             // set directions
             int snakeInd = 0;
@@ -158,7 +164,7 @@ public class SnakesWorld extends World {
         }
     }
 
-    private void addGeneration(byte[][] generation) {
+    private void addGeneration(Solution[] generation) {
         resetStates();
         generations.add(generation);
         this.generation = generations.size;
