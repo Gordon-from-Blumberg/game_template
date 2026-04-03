@@ -7,6 +7,8 @@ import com.gordonfromblumberg.games.core.common.world.World;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class SnakesWorld extends World {
     static final int generationSize = 16;
@@ -14,6 +16,8 @@ public class SnakesWorld extends World {
     static final char emptyChar = '.';
     static final char appleChar = '$';
     static final char platformChar = '#';
+    static final Comparator<Solution> solutionComparator = (s1, s2) ->
+            Float.compare(s2.fitness, s1.fitness);
 
     final State baseState;
     final State[] states = new State[generationSize];
@@ -80,6 +84,7 @@ public class SnakesWorld extends World {
         }
 
         addGeneration(firstGeneration);
+        simulateAndCalculateFitness();
     }
 
     @Override
@@ -106,6 +111,10 @@ public class SnakesWorld extends World {
         }
     }
 
+    void reset() {
+        resetStates();
+    }
+
     void setGeneration(int generationNumber) {
         if (generationNumber < 1)
             return;
@@ -130,38 +139,74 @@ public class SnakesWorld extends World {
     }
 
     private void move() {
-        final int allSnakeCount = baseState.snakeMap.length;
-        final int width = baseState.grid.length;
-
         for (int i = 0; i < generationSize; ++i) {
             final State state = states[i];
             final byte move = generations.get(generation - 1)[i].moveSequence[simulationTurn];
+            state.setDirections(move);
+            state.move();
+        }
+    }
 
-            // set directions
-            int snakeInd = 0;
-            for (int s = 0; s < allSnakeCount; ++s) {
-                Snake snake = state.snakeMap[s];
-                if (snake.mine) {
-                    snake.dir = Direction.ALL[(move >>> (2 * snakeInd++)) & 3];
-                } else if (snake.head != null) {
-                    SnakePart head = snake.head;
-                    for (Direction d : Direction.ALL) {
-                        int newX = head.x + d.x;
-                        if (newX < 0 || newX >= width) continue;
-                        char ch = state.get(newX, head.y + d.y);
-                        if (ch == appleChar) {
-                            snake.dir = d;
-                            break;
-                        }
-                        if (ch == emptyChar) {
-                            snake.dir = d;
-                        }
+    private void simulateAndCalculateFitness() {
+        int myBaseScore = 0, myBaseSnakeCount = 0;
+        for (Snake snake : baseState.snakeMap) {
+            if (snake.mine && snake.head != null) {
+                myBaseScore += snake.parts.size;
+                ++myBaseSnakeCount;
+            }
+        }
+        final float loseScoreCoef = 0.5f / myBaseScore;
+        final Solution[] curGeneration = generations.get(generation - 1);
+        for (int g = 0; g < generationSize; ++g) {
+            final State state = states[g];
+            final Solution solution = curGeneration[g];
+            for (int m = 0; m < moveSequenceSize; ++m) {
+                final byte move = solution.moveSequence[m];
+                state.setDirections(move);
+                final boolean finished = state.move();
+                int myScore = 0;
+                for (Snake snake : state.snakeMap) {
+                    if (snake.mine && snake.head != null)
+                        ++myScore;
+                }
+                state.myScoreSum += myScore * (1 + 0.1f * (state.turn - baseState.turn));
+                if (finished)
+                    break;
+            }
+
+            int myScore = 0, mySnakeCount = 0;
+            for (Snake snake : state.snakeMap) {
+                if (snake.head != null) {
+                    if (snake.mine) {
+                        ++mySnakeCount;
+                        myScore += snake.parts.size;
                     }
                 }
             }
 
-            state.move();
+            float fit = state.myScoreSum / 10;
+            if (mySnakeCount < myBaseSnakeCount) {
+                fit *= 1 + 0.5f * (mySnakeCount - 1);
+            } else {
+                fit *= 5;
+            }
+            if (myScore < myBaseScore) {
+                fit *= 1 - loseScoreCoef * (myBaseScore - myScore);
+            } else if (myScore > myBaseScore) {
+                float k = 1 + 0.5f * (myScore - myBaseScore);
+                fit *= k * k;
+            }
+            fit /= 1 + 0.2f * state.outOfScreen;
+//                if (myScore > oppScore) {
+//                    fit *= 1 + 0.2f * (myScore - oppScore);
+//                }
+//                fit *= 1 + 0.8f * (state.myMaxScore - myBaseScore);
+//                fit *= 1 + 0.1f * state.mySnakeCountSum / (state.turn - turn);
+
+            solution.fitness = fit;
         }
+        Arrays.sort(curGeneration, solutionComparator);
+        resetStates();
     }
 
     private void addGeneration(Solution[] generation) {

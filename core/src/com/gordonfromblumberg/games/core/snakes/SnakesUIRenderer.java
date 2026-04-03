@@ -48,7 +48,7 @@ public class SnakesUIRenderer extends WorldUIRenderer<SnakesWorld> {
         float space = 20f;
         Table footer = new Table(skin);
         footer.add("Generation").align(Align.center).spaceRight(space);
-        footer.add("Simulation").align(Align.center).colspan(3).space(0f, space, 0f, space);
+        footer.add("Simulation").align(Align.center).colspan(4).space(0f, space, 0f, space);
         footer.add("Turn").align(Align.center).space(0f, space, 0f, space);
         footer.add("Speed").align(Align.center).spaceLeft(space);
 
@@ -60,6 +60,15 @@ public class SnakesUIRenderer extends WorldUIRenderer<SnakesWorld> {
         generationLbl.setFieldWidth(40f);
         footer.add(generationLbl).spaceRight(space);
 
+        TextButton oneTurnBtn = new TextButton("One turn", skin);
+        oneTurnBtn.addListener(new ClickListener(Input.Buttons.LEFT) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                world.oneTurn();
+            }
+        });
+        footer.add(oneTurnBtn).spaceLeft(space);
+
         TextButton runBtn = new TextButton("Run", skin);
         runBtn.addListener(new ClickListener(Input.Buttons.LEFT) {
             @Override
@@ -67,7 +76,7 @@ public class SnakesUIRenderer extends WorldUIRenderer<SnakesWorld> {
                 world.resetPause();
             }
         });
-        footer.add(runBtn).spaceLeft(space);
+        footer.add(runBtn);
 
         TextButton stopBtn = new TextButton("Stop", skin);
         stopBtn.addListener(new ClickListener(Input.Buttons.LEFT) {
@@ -78,14 +87,14 @@ public class SnakesUIRenderer extends WorldUIRenderer<SnakesWorld> {
         });
         footer.add(stopBtn);
 
-        TextButton oneTurnBtn = new TextButton("One turn", skin);
-        oneTurnBtn.addListener(new ClickListener(Input.Buttons.LEFT) {
+        TextButton resetBtn = new TextButton("Reset", skin);
+        resetBtn.addListener(new ClickListener(Input.Buttons.LEFT) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                world.oneTurn();
+                world.reset();
             }
         });
-        footer.add(oneTurnBtn).spaceRight(space);
+        footer.add(resetBtn).spaceRight(space);
 
         footer.add(new UpdatableLabel(skin, true, sb -> sb.append(world.getSimulationTurn())))
                 .align(Align.center);

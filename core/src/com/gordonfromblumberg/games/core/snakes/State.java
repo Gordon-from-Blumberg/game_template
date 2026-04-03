@@ -3,7 +3,7 @@ package com.gordonfromblumberg.games.core.snakes;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.gordonfromblumberg.games.core.snakes.SnakesWorld.moveSequenceSize;
+import static com.gordonfromblumberg.games.core.snakes.SnakesWorld.*;
 
 public class State {
     static final int bits16 = (1 << 16) - 1;
@@ -15,7 +15,6 @@ public class State {
     final Set<Integer> powerSources = new HashSet<>();
     float myScoreSum;
     int outOfScreen;
-    int generation;
 
     State(int width, int height, int snakeCount, boolean base) {
         this.grid = new char[width][height];
@@ -52,7 +51,8 @@ public class State {
         }
     }
 
-    void move() {
+    // return true when finished
+    boolean move() {
         final char[][] grid = this.grid;
         final int width = grid.length;
         final int height = grid[0].length;
@@ -66,17 +66,17 @@ public class State {
         }
 
         if (mySnakeCount == 0 || oppSnakeCount == 0 || turn >= moveSequenceSize || powerSources.isEmpty())
-            return;
+            return true;
 
         // fill moveTargets - set of cells where snakes are going to move (empty or with power source)
         for (Snake snake : snakeMap) {
             if (snake.head == null) continue;
 
             char target = snake.next(grid);
-            if (target == SnakesWorld.emptyChar || target == SnakesWorld.appleChar) {
+            if (target == emptyChar || target == appleChar) {
                 int coords = packCoords(snake.head.x + snake.dir.x, snake.head.y + snake.dir.y);
                 moveTargets.add(coords);
-                if (target == SnakesWorld.appleChar) {
+                if (target == appleChar) {
                     snake.grow = true;
                 }
             }
@@ -89,7 +89,7 @@ public class State {
             int nextX = snake.head.x + snake.dir.x;
             int nextY = snake.head.y + snake.dir.y;
             char target = snake.next(grid);
-            if (target == SnakesWorld.emptyChar || target == SnakesWorld.appleChar) {
+            if (target == emptyChar || target == appleChar) {
                 SnakePart newHead = SnakePart.instance();
                 newHead.set(nextX, nextY);
                 snake.parts.addFirst(newHead);
@@ -97,7 +97,7 @@ public class State {
                 set(snake.head.x, snake.head.y, ch);
                 snake.head = newHead;
                 set(snake.head.x, snake.head.y, Character.toUpperCase(ch));
-                if (target == SnakesWorld.appleChar) {
+                if (target == appleChar) {
                     powerSources.remove(packCoords(nextX, nextY));
                 }
             }
@@ -110,7 +110,7 @@ public class State {
             // when snake does not eat power source its tail is removed
             if (!snake.grow) {
                 SnakePart tail = snake.parts.removeLast();
-                set(tail.x, tail.y, SnakesWorld.emptyChar);
+                set(tail.x, tail.y, emptyChar);
                 tail.free();
             }
 
@@ -122,7 +122,7 @@ public class State {
             if (snake.head == null || !snake.removeHead) continue;
 
             snake.removeHead = false;
-            set(snake.head.x, snake.head.y, SnakesWorld.emptyChar);
+            set(snake.head.x, snake.head.y, emptyChar);
             snake.parts.removeFirst().free();
             snake.head = snake.parts.first();
             toUpperCase(snake.head.x, snake.head.y);
@@ -142,7 +142,7 @@ public class State {
             // is snake length < 3 or snake out of screen
             if (snake.parts.size < 3 || maxX < 0 || minX >= width) {
                 for (SnakePart part : snake.parts) {
-                    set(part.x, part.y, SnakesWorld.emptyChar);
+                    set(part.x, part.y, emptyChar);
                 }
                 snake.reset();
             }
@@ -162,7 +162,7 @@ public class State {
                 // find
                 while (fall < minFall) {
                     char cell = get(x, part.y + fall + 1);
-                    if (cell == SnakesWorld.emptyChar || Character.toLowerCase(cell) == snakeChar) {
+                    if (cell == emptyChar || Character.toLowerCase(cell) == snakeChar) {
                         ++fall;
                         continue;
                     }
@@ -175,7 +175,7 @@ public class State {
 
             // first remove
             for (SnakePart part : snake.parts) {
-                set(part.x, part.y, SnakesWorld.emptyChar);
+                set(part.x, part.y, emptyChar);
             }
             // then render
             for (SnakePart part : snake.parts) {
@@ -194,6 +194,31 @@ public class State {
         }
 
         ++turn;
+        return false;
+    }
+
+    void setDirections(byte move) {
+        final int width = grid.length;
+        int snakeInd = 0;
+        for (Snake snake : snakeMap) {
+            if (snake.mine) {
+                snake.dir = Direction.ALL[(move >>> (2 * snakeInd++)) & 3];
+            } else if (snake.head != null) {
+                SnakePart head = snake.head;
+                for (Direction d : Direction.ALL) {
+                    int newX = head.x + d.x;
+                    if (newX < 0 || newX >= width) continue;
+                    char ch = get(newX, head.y + d.y);
+                    if (ch == appleChar) {
+                        snake.dir = d;
+                        break;
+                    }
+                    if (ch == emptyChar) {
+                        snake.dir = d;
+                    }
+                }
+            }
+        }
     }
 
     void set(State original) {
@@ -217,7 +242,7 @@ public class State {
     }
 
     char get(int x, int y) {
-        return x < 0 || x >= grid.length || y < 0 || y >= grid[0].length ? SnakesWorld.emptyChar : grid[x][y];
+        return x < 0 || x >= grid.length || y < 0 || y >= grid[0].length ? emptyChar : grid[x][y];
     }
 
     void set(int x, int y, char ch) {
