@@ -13,6 +13,7 @@ import java.util.Comparator;
 public class SnakesWorld extends World {
     static final int generationSize = 16;
     static final int moveSequenceSize = 32;
+    static final float mutationChance = 0.02f;
     static final char emptyChar = '.';
     static final char appleChar = '$';
     static final char platformChar = '#';
@@ -23,6 +24,7 @@ public class SnakesWorld extends World {
     final State[] states = new State[generationSize];
     int generation;
     final Array<Solution[]> generations = new Array<>();
+    final float[] probs = new float[generationSize];
     int simulationTurn;
 
     float time;
@@ -120,10 +122,12 @@ public class SnakesWorld extends World {
             return;
 
         resetStates();
-        if (generationNumber > generations.size) {
+        if (generationNumber >= generations.size) {
             generateNewGeneration();
+            generation = generations.size - 1;
+        } else {
+            generation = generationNumber;
         }
-        generation = generations.size;
     }
 
     int getSimulationTurn() {
@@ -135,13 +139,13 @@ public class SnakesWorld extends World {
     }
 
     float getFitness(int n) {
-        return generations.get(generation - 1)[n].fitness;
+        return generations.get(generation)[n].fitness;
     }
 
     private void move() {
         for (int i = 0; i < generationSize; ++i) {
             final State state = states[i];
-            final byte move = generations.get(generation - 1)[i].moveSequence[simulationTurn];
+            final byte move = generations.get(generation)[i].moveSequence[simulationTurn];
             state.setDirections(move);
             state.move();
         }
@@ -156,7 +160,7 @@ public class SnakesWorld extends World {
             }
         }
         final float loseScoreCoef = 0.5f / myBaseScore;
-        final Solution[] curGeneration = generations.get(generation - 1);
+        final Solution[] curGeneration = generations.get(generations.size - 1);
         for (int g = 0; g < generationSize; ++g) {
             final State state = states[g];
             final Solution solution = curGeneration[g];
@@ -167,7 +171,7 @@ public class SnakesWorld extends World {
                 int myScore = 0;
                 for (Snake snake : state.snakeMap) {
                     if (snake.mine && snake.head != null)
-                        ++myScore;
+                        myScore += snake.parts.size;
                 }
                 state.myScoreSum += myScore * (1 + 0.1f * (state.turn - baseState.turn));
                 if (finished)
@@ -212,11 +216,45 @@ public class SnakesWorld extends World {
     private void addGeneration(Solution[] generation) {
         resetStates();
         generations.add(generation);
-        this.generation = generations.size;
+        this.generation = generations.size - 1;
     }
 
     private void generateNewGeneration() {
+        final int allSnakeCount = baseState.snakeMap.length;
+        Solution[] prevGeneration = generations.get(generations.size - 1);
+        Solution[] newGeneration = new Solution[generationSize];
+        for (int i = 0; i < generationSize; ++i) {
+            probs[i] = prevGeneration[i].fitness * prevGeneration[i].fitness;
+            newGeneration[i] = new Solution(moveSequenceSize);
+        }
+        for (int i = 0; i < generationSize; ++i) {
+            if (i == 0) {
+                System.arraycopy(prevGeneration[0].moveSequence, 0,
+                                 newGeneration[0].moveSequence, 0, moveSequenceSize);
+                continue;
+            }
+            int par1Idx = RandomGen.INSTANCE.getRand(probs);
+            int par2Idx = RandomGen.INSTANCE.getRand(probs);
 
+            final byte[] par1 = prevGeneration[par1Idx].moveSequence;
+            final byte[] par2 = prevGeneration[par2Idx].moveSequence;
+            final Solution newSolution = newGeneration[i];
+            for (int j = 0; j < moveSequenceSize; ++j) {
+                final short par1Move = par1[j];
+                final short par2Move = par2[j];
+                byte move = 0;
+                for (int s = 0; s < allSnakeCount; s += 2) {
+                    short snakeMove = (short) (RandomGen.INSTANCE.nextFloat() < mutationChance
+                            ? (RandomGen.INSTANCE.nextInt(4) << s)
+                            : (RandomGen.INSTANCE.nextBool() ? par1Move : par2Move) & (3 << s));
+                    move |= snakeMove;
+                }
+                newSolution.moveSequence[j] = move;
+            }
+        }
+
+        addGeneration(newGeneration);
+        simulateAndCalculateFitness();
     }
 
     private void resetStates() {

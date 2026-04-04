@@ -54,9 +54,9 @@ public class SnakesUIRenderer extends WorldUIRenderer<SnakesWorld> {
 
         footer.row().padBottom(4f);
         IntChangeableLabel generationLbl = new IntChangeableLabel(skin, world::setGeneration);
-        generationLbl.setMinValue(1);
+        generationLbl.setMinValue(0);
         generationLbl.setMaxValue(200);
-        generationLbl.setValue(1);
+        generationLbl.setValue(0);
         generationLbl.setFieldWidth(40f);
         footer.add(generationLbl).spaceRight(space);
 

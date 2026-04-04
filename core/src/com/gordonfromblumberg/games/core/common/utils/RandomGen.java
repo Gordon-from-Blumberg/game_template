@@ -62,4 +62,22 @@ public class RandomGen {
     public <T> T getRandomItem(Array<T> array) {
         return array.get(nextInt(array.size));
     }
+
+    /**
+     * @param probs Array of relative probabilities
+     * @return Random index <code>0 <= index < probs.length</code>
+     */
+    public int getRand(float[] probs) {
+        float s = 0;
+        for (float prob : probs) s += prob;
+        float p = rand.nextFloat() * s;
+        s = 0;
+        for (int i = 0, n = probs.length; i < n; ++i) {
+            s += probs[i];
+            if (p < s) {
+                return i;
+            }
+        }
+        return probs.length - 1;
+    }
 }
