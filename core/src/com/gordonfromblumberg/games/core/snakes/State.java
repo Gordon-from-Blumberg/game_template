@@ -68,6 +68,15 @@ public class State {
         if (mySnakeCount == 0 || oppSnakeCount == 0 || turn >= moveSequenceSize || powerSources.isEmpty())
             return true;
 
+        // Calculate turn reward before moving
+        float turnReward = 0;
+        for (Snake snake : snakeMap) {
+            if (snake.mine && snake.head != null) {
+                turnReward += 1.0f;                          // reward for survival
+                turnReward += snake.parts.size * 0.2f;       // reward for growth
+            }
+        }
+
         // fill moveTargets - set of cells where snakes are going to move (empty or with power source)
         for (Snake snake : snakeMap) {
             if (snake.head == null) continue;
@@ -99,6 +108,9 @@ public class State {
                 set(snake.head.x, snake.head.y, Character.toUpperCase(ch));
                 if (target == appleChar) {
                     powerSources.remove(packCoords(nextX, nextY));
+                    if (snake.mine) {
+                        turnReward += 5.0f;  // bonus for eating apple
+                    }
                 }
             }
 
@@ -187,12 +199,15 @@ public class State {
         for (Snake snake : snakeMap) {
             if (snake.head != null && snake.mine) {
                 for (SnakePart part : snake.parts) {
-                    if (part.x < 0 || part.x >= width || part.y < 0 || part.y >= height)
+                    if (part.x < 0 || part.x >= width || part.y < 0 || part.y >= height) {
                         ++outOfScreen;
+                        turnReward -= 1.0f;  // penalty for out of screen segment
+                    }
                 }
             }
         }
 
+        myScoreSum += turnReward;
         ++turn;
         return false;
     }

@@ -20,6 +20,16 @@ public class SnakesWorld extends World {
     static final Comparator<Solution> solutionComparator = (s1, s2) ->
             Float.compare(s2.fitness, s1.fitness);
 
+    // Fitness weights
+    static final float W_TURN_REWARD = 1.0f;
+    static final float W_SURVIVAL = 80.0f;
+    static final float W_GROWTH = 60.0f;
+    static final float W_DOMINANCE = 50.0f;
+    static final float W_TIME = 30.0f;
+    static final float W_OUT_OF_SCREEN = 0.40f;
+    static final float MAX_GROWTH_RATIO = 3.0f;
+    static final float MAX_DOMINANCE = 5.0f;
+
     final State baseState;
     final State[] states = new State[generationSize];
     int generation;
@@ -159,53 +169,75 @@ public class SnakesWorld extends World {
                 ++myBaseSnakeCount;
             }
         }
-        final float loseScoreCoef = 0.5f / myBaseScore;
         final Solution[] curGeneration = generations.get(generations.size - 1);
         for (int g = 0; g < generationSize; ++g) {
             final State state = states[g];
             final Solution solution = curGeneration[g];
+            int actualTurns = 0;
             for (int m = 0; m < moveSequenceSize; ++m) {
                 final byte move = solution.moveSequence[m];
                 state.setDirections(move);
                 final boolean finished = state.move();
-                int myScore = 0;
-                for (Snake snake : state.snakeMap) {
-                    if (snake.mine && snake.head != null)
-                        myScore += snake.parts.size;
-                }
-                state.myScoreSum += myScore * (1 + 0.1f * (state.turn - baseState.turn));
+                ++actualTurns;
                 if (finished)
                     break;
             }
 
             int myScore = 0, mySnakeCount = 0;
+            int oppScore = 0, oppSnakeCount = 0;
             for (Snake snake : state.snakeMap) {
                 if (snake.head != null) {
                     if (snake.mine) {
                         ++mySnakeCount;
                         myScore += snake.parts.size;
+                    } else {
+                        ++oppSnakeCount;
+                        oppScore += snake.parts.size;
                     }
                 }
             }
 
-            float fit = state.myScoreSum / 10;
-            if (mySnakeCount < myBaseSnakeCount) {
-                fit *= 1 + 0.5f * (mySnakeCount - 1);
-            } else {
-                fit *= 5;
+            // Component 1: Turn rewards (collected during simulation)
+            float turnReward = state.myScoreSum * W_TURN_REWARD;
+
+            // Component 2: Survival ratio [0, 1]
+            float survivalRatio = myBaseSnakeCount > 0
+                    ? (float) mySnakeCount / myBaseSnakeCount
+                    : 0;
+
+            // Component 3: Growth ratio [0, MAX_GROWTH_RATIO]
+            float growthRatio = myBaseScore > 0
+                    ? (float) myScore / myBaseScore
+                    : 0;
+            growthRatio = Math.min(growthRatio, MAX_GROWTH_RATIO);
+
+            // Component 4: Dominance over opponent [0, MAX_DOMINANCE]
+            float myPower = myScore + mySnakeCount * 3.0f;
+            float oppPower = oppScore + oppSnakeCount * 3.0f;
+            float dominance = oppPower > 0
+                    ? myPower / oppPower
+                    : myPower > 0 ? MAX_DOMINANCE : 1.0f;
+            dominance = Math.min(dominance, MAX_DOMINANCE);
+
+            // Component 5: Time ratio [0, 1]
+            float timeRatio = (float) actualTurns / moveSequenceSize;
+
+            // Component 6: Out of screen penalty
+            float outPenalty = 1.0f / (1.0f + W_OUT_OF_SCREEN * state.outOfScreen);
+
+            // Final fitness: weighted sum with survival as gate
+            float fit = turnReward
+                    + W_SURVIVAL * survivalRatio
+                    + W_GROWTH * growthRatio
+                    + W_DOMINANCE * dominance
+                    + W_TIME * timeRatio;
+
+            // Survival is critical: if no snakes survived, heavily reduce fitness
+            if (survivalRatio == 0) {
+                fit *= 0.1f;
             }
-            if (myScore < myBaseScore) {
-                fit *= 1 - loseScoreCoef * (myBaseScore - myScore);
-            } else if (myScore > myBaseScore) {
-                float k = 1 + 0.5f * (myScore - myBaseScore);
-                fit *= k * k;
-            }
-            fit /= 1 + 0.2f * state.outOfScreen;
-//                if (myScore > oppScore) {
-//                    fit *= 1 + 0.2f * (myScore - oppScore);
-//                }
-//                fit *= 1 + 0.8f * (state.myMaxScore - myBaseScore);
-//                fit *= 1 + 0.1f * state.mySnakeCountSum / (state.turn - turn);
+
+            fit *= outPenalty;
 
             solution.fitness = fit;
         }
