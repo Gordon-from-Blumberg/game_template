@@ -61,5 +61,9 @@
 	},
 	"TreeStyle": {
 		"default": { "minus": "tree-minus", "plus": "tree-plus", "selection": "default-select-selection" }
+	},
+
+	"com.gordonfromblumberg.games.core.common.ui.FileTable$FileTableStyle": {
+		"default": { "background": "default-window" }
 	}
 }
